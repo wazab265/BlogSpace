@@ -2,7 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
 const Blog = require('./models/blog');
-const dotenv = require("dotenv")
+const dotenv = require("dotenv");
+const { render } = require('express/lib/response');
 dotenv.config()
 
 //express app
@@ -50,6 +51,15 @@ app.post('/blogs',(req, res) => {
   blog.save()
     .then((result) => {
       res.redirect('/blogs');
+    })
+    .catch(err => console.log(err));
+})
+
+app.get('/blogs/:id',(req, res) => {
+  const id=req.params.id;
+  Blog.findById(id)
+    .then((result) => {
+      res.render('details',{blog:result,title: 'Blog Details'});
     })
     .catch(err => console.log(err));
 })
